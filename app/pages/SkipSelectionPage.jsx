@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "../styles/SkipSelectionPage.css";
-
+import skipImages from "../assets/skipImages.jsx";
+import component from "../components/SkipSelectionPage.jsx";
+console.log({ component });
 export default function SkipSelectionPage() {
   const [data, setData] = useState([]);
   const [selectedSkip, setSelectedSkip] = useState(null);
@@ -12,19 +14,16 @@ export default function SkipSelectionPage() {
   };
 
   useEffect(async () => {
-    const skips = await fetchData(
-      "https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
-    );
-    console.log(skips);
-
-    setData(skips);
+    try {
+      const skips = await fetchData(
+        "https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
+      );
+      console.log(skips);
+      setData(skips);
+    } catch (err) {
+      console.error("Error fetching skips:", err);
+    }
   }, []);
-
-  const skipImages = {
-    small:
-      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/4-yarder-skip.jpg",
-    big: "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v…object/public/skips/skip-sizes/40-yarder-skip.jpg",
-  };
 
   const handleGetSkip = (skipId) => {
     setSelectedSkip(skipId);
@@ -33,12 +32,7 @@ export default function SkipSelectionPage() {
   return data.length !== 0 ? (
     <>
       <div className="container mx-auto sm:px-6 lg:px-8 dark-bg">
-        <div className="mb-4">
-          <h1 className="flex justify-center">Choose Your Skip Size</h1>
-          <h2 className="flex justify-center">
-            Select the skip size that best suits your needs
-          </h2>
-        </div>
+        <component.PageHeader />
         <div className="">
           {data.map((item, index) => {
             const isActive = selectedSkip === item.id;
@@ -51,9 +45,8 @@ export default function SkipSelectionPage() {
               >
                 {/* Overlay */}
                 <div className="absolute inset-0 z-10 lg:flex justify-center overlay group-hover:overlay">
-                  <button
+                  <component.Button
                     id={item.id}
-                    type="button"
                     className={`btn cursor-pointer self-center hidden group-hover:inline-block`}
                     onClick={() => {
                       console.log("item", item);
@@ -61,13 +54,13 @@ export default function SkipSelectionPage() {
                     }}
                   >
                     Get {item.size} Yard Skip
-                  </button>
+                  </component.Button>
                 </div>
 
                 {/* Content */}
                 <div className="relative flex justify-around lg:mb-2 card">
                   <div className="basis-40">
-                    <img src={skipImages["small"]} alt="Skip bin" />
+                    <img src={skipImages("small")} alt="Skip bin" />
                   </div>
                   <div className="basis-40 flex items-center justify-center">
                     <p className="font-bold">{item.size} Yard Skip</p>
