@@ -24,6 +24,9 @@
   background-color: var(--primary-blue);
   padding: 5px 5px;
   border-radius: 5px;
+}
 
-  
+.btn-small-active {
+  background-color: var(--primary-blue);
+  padding: 5px 5px;
 }

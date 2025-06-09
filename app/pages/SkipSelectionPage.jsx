@@ -16,6 +16,7 @@ export default function SkipSelectionPage() {
       "https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
     );
     console.log(skips);
+
     setData(skips);
   }, []);
 
@@ -29,46 +30,6 @@ export default function SkipSelectionPage() {
     setSelectedSkip(skipId);
   };
   console.log("selectedSkip", selectedSkip);
-
-  // mobile size
-  const [activeCardId, setActiveCardId] = useState(null);
-
-  const toggleCard = (id) => {
-    setActiveCardId((prev) => (prev === id ? null : id));
-  };
-
-  const handleButtonClick = (item) => {
-    console.log("Clicked item:", item);
-  };
-
-  /**
-allowed_on_road:false
-allows_heavy_waste:true
-area:""
-created_at:"2025-04-03T13:51:40.344435"
-forbidden:false
-hire_period_days:14
-id:15124
-per_tonne_cost:248
-postcode:"NR32"
-price_before_vat:992
-size:20
-transport_cost:248
-updated_at:"2025-04-07T13:16:52.434"
-vat:20
- */
-  /**
-    <div className="flex justify-around mb-2">
-            <p className="basis-40"></p>
-            <p className="basis-40"></p>
-            <p className="basis-40 flex items-center justify-center font-medium">
-              Day hire period
-            </p>
-            <p className="basis-40 flex items-center justify-center font-medium">
-              Cost
-            </p>
-          </div>
- */
   return data.length !== 0 ? (
     <>
       <div className="container mx-auto sm:px-6 lg:px-8 dark-bg">
@@ -80,19 +41,18 @@ vat:20
         </div>
         <div className="">
           {data.map((item, index) => {
-            const isActive = activeCardId === item.id;
+            const isActive = selectedSkip === item.id;
 
             return (
               <div
-                className="relative group"
+                className="relative group sm:mb-2"
                 id={item.id}
                 key={item.id}
-                onClick={() => toggleCard(item.id)}
               >
                 {/* Overlay */}
-                <div className="absolute inset-0 z-10 flex justify-center overlay group-hover:overlay">
+                <div className="absolute inset-0 z-10 lg:flex justify-center overlay group-hover:overlay">
                   <button
-                    name={item.id}
+                    id={item.id}
                     type="button"
                     className={`btn cursor-pointer self-center hidden group-hover:inline-block`}
                     onClick={() => {
@@ -105,7 +65,7 @@ vat:20
                 </div>
 
                 {/* Content */}
-                <div className="relative flex justify-around mb-2 card">
+                <div className="relative flex justify-around lg:mb-2 card">
                   <div className="basis-40">
                     <img src={skipImages["small"]} alt="Skip bin" />
                   </div>
@@ -118,7 +78,6 @@ vat:20
                     ) : null}
                     <p className="self-center">{item.hire_period_days}</p>
                   </div>
-
                   <div className="basis-40 flex justify-center">
                     {index == 0 ? (
                       <span className="font-medium">Cost</span>
@@ -127,6 +86,20 @@ vat:20
                       $ {" " + item.price_before_vat}
                     </p>
                   </div>
+                </div>
+                <div className={`lg:hidden`}>
+                  <button
+                    type="button"
+                    className={`cursor-pointer w-full  ${
+                      isActive ? "btn-small-active" : "border-1"
+                    }`}
+                    onClick={() => {
+                      console.log("item", item, selectedSkip);
+                      handleGetSkip(item.id);
+                    }}
+                  >
+                    Get Skip
+                  </button>
                 </div>
               </div>
             );
